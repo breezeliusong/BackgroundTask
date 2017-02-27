@@ -22,7 +22,9 @@ namespace MyBackgroundTask
             // await ExampleMethodAsync();
             //
             Debug.WriteLine("Back");
-            var file = await StorageFile.GetFileFromApplicationUriAsync(new Uri(@"ms-appx:///Assets/test.txt"));
+            //var file = await StorageFile.GetFileFromApplicationUriAsync(new Uri("ms-appx:///Assets/test.txt", UriKind. Absolute));
+            var localFolder = ApplicationData.Current.LocalFolder;
+            StorageFile file=await localFolder.CreateFileAsync("test.text", CreationCollisionOption.OpenIfExists);
             await Windows.Storage.FileIO.WriteTextAsync(file, "Swift as a shadow");
             // Composite setting
             Windows.Storage.ApplicationDataContainer localSettings =

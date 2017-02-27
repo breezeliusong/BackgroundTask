@@ -7,6 +7,7 @@ using Windows.ApplicationModel.Background;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Storage;
+using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -81,8 +82,18 @@ namespace SimpleBackgroundTask
         {
             //string imageFile = @"Assets\test.txt";
             //var file = await Windows.ApplicationModel.Package.Current.InstalledLocation.GetFileAsync(imageFile);
-            var file = await StorageFile.GetFileFromApplicationUriAsync(new Uri(@"ms-appx:///Assets/test.txt"));
+            //var file = await StorageFile.GetFileFromApplicationUriAsync(new Uri(@"ms-appx:///Assets/test.txt"));
+            var localFolder = ApplicationData.Current.LocalFolder;
+            StorageFile file = await localFolder.CreateFileAsync("test.text", CreationCollisionOption.OpenIfExists);
             string text = await Windows.Storage.FileIO.ReadTextAsync(file);
+
+            await Dispatcher.RunAsync(CoreDispatcherPriority.Normal,
+            async() =>
+            {
+                await Windows.Storage.FileIO.WriteTextAsync(file, "Dispatcher");
+                string text1 = await Windows.Storage.FileIO.ReadTextAsync(file);
+            });
+
         }
     }
 }
